@@ -37,3 +37,15 @@ class PersonaAdmin(admin.ModelAdmin):
         # Si se está creando un nuevo objeto, no hacemos la CURP de solo lectura
         else:
             return []
+
+
+    def has_module_permission(self, request):
+        if request.user.groups.filter(name='Trabajador').exists():
+            return False
+        return super().has_module_permission(request)
+
+    def get_model_perms(self, request):
+        perms = super().get_model_perms(request)
+        if request.user.groups.filter(name='Trabajador').exists():
+            return {}
+        return perms
